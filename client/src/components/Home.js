@@ -33,10 +33,26 @@ export default class Home extends Component {
     });
   };
 
-
-  handleSearchArea = (event) => { 
-    console.log(event.target.value);
+  filterData(posts, searchKey) {
+    const result = posts.filter(
+      (post) =>
+        post.topic.toLowerCase().includes(searchKey) ||
+        post.description.toLowerCase().includes(searchKey) ||
+        post.postCategory.toLowerCase().includes(searchKey)
+    );
+    
+    this.setState({ posts: result });
   }
+
+  handleSearchArea = (event) => {
+    const searchKey = event.currentTarget.value;
+
+    axios.get("http://localhost:8000/posts").then((res) => {
+      if (res.data.success) {
+        this.filterData(res.data.existingPosts, searchKey);
+      }
+    });
+  };
 
   render() {
     return (
